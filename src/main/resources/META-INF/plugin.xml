@@ -1,0 +1,17 @@
+<idea-plugin>
+    <id>viper.silicon</id>
+    <name>Silicon IDEA</name>
+    <version>0.1.0</version>
+    <vendor url="viper.ethz.ch">Viper</vendor>
+
+    <description>IntelliJ IDEA plugin for Silicon.</description>
+
+    <idea-version since-build="203.0" />
+
+    <depends>com.intellij.modules.java</depends>
+    <depends>org.intellij.scala</depends>
+
+    <extensions defaultExtensionNs="org.intellij.scala">
+        <syntheticMemberInjector implementation="viper.silicon.SiliconInjector" />
+    </extensions>
+</idea-plugin>
