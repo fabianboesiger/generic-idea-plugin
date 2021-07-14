@@ -13,10 +13,10 @@ final class SiliconInjector extends SyntheticMembersInjector {
   private val logger = Logger.getInstance(classOf[SiliconInjector])
   logger.info("SiliconInjector plugin was started.")
 
-  private val qualifiedName = "flyweight"
+  // Cache to speed up things for testing. Plugin may need to be reloaded if data in cache is expired.
   private val cache = new scala.collection.mutable.HashMap[(String, String), Option[(String, Seq[String], Seq[String])]]
 
-  
+  // Extracts the class name of a ScTypeDefinition.
   private def getName(source: ScTypeDefinition): Option[String] = {
     source match {
       case clazz: ScClass => {
@@ -35,7 +35,7 @@ final class SiliconInjector extends SyntheticMembersInjector {
     None
   }
 
-
+  // Loads the XML data from the .plugin directory.
   private def getConfig(source: ScTypeDefinition): Option[(String, Seq[String], Seq[String])] = {
     val projectFilePath = source.getProject.getProjectFilePath
     val termName = getName(source)
@@ -99,7 +99,6 @@ final class SiliconInjector extends SyntheticMembersInjector {
       }
       case None => Seq.empty
     }
-
   }
 
   override def injectMembers(source: ScTypeDefinition): Seq[String] = {

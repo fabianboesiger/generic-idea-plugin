@@ -38,6 +38,7 @@ object flyweightMacro {
       }
     """ = output
 
+    // Extracts all method signatures of methods defined in class.
     val members = classDefns.map(member => {
       try {
         val q"$_ def $methodName(...$methodFields): $methodReturnType = $methodBody" = member
@@ -51,6 +52,7 @@ object flyweightMacro {
       .filter(_.nonEmpty)
       .map(_.get)
 
+    // Extracts all function signatures of functions defined in companion object.
     val functions = companionDefns.map(function => {
       try {
         val q"$_ def $methodName(...$methodFields): $methodReturnType = $methodBody" = function
@@ -64,12 +66,14 @@ object flyweightMacro {
       .filter(_.nonEmpty)
       .map(_.get)
 
+    // Extracts the macro name.
     val macroName = c.prefix.tree match {
       case q"new $name" => name.toString
       case q"new $name(..$_)" => name.toString
       case _ => assert(false, "Macro name not found")
     }
 
+    // Generate and save XML file.
     val xml =
       <info>
         <macroAnnotationName>{macroName}</macroAnnotationName>
@@ -80,7 +84,6 @@ object flyweightMacro {
     if (!Files.exists(Paths.get(".plugin"))) {
       Files.createDirectory(Paths.get(".plugin"))
     }
-
     XML.save(s".plugin/${className.toString}.xml", xml)
   }
 
