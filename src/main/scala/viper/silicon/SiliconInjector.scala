@@ -16,35 +16,7 @@ final class SiliconInjector extends SyntheticMembersInjector {
   private val qualifiedName = "flyweight"
   private val cache = new scala.collection.mutable.HashMap[(String, String), Option[(String, Seq[String], Seq[String])]]
 
-
-
-  /*
-  var configCache: Option[Option[(String, Seq[String], Seq[String])]] = None
-
-  def getConfig(source: ScTypeDefinition): Option[(String, Seq[String], Seq[String])] = {
-    configCache match {
-      case None => {
-        val projectFilePath = source.getProject.getProjectFilePath
-        val until = projectFilePath.indexOfSlice(".idea")
-        val configFilePath = projectFilePath.slice(0, until) + "plugin-config.xml"
-        //logger.info(s"Config file path is: ${configFilePath}")
-        val config = if (new java.io.File(configFilePath).exists) {
-          val xml = XML.loadFile(configFilePath)
-          val qualifiedName = (xml \\ "macroAnnotationName").text
-          val members = (xml \\ "member").map(member => member.text)
-          val functions = (xml \\ "function").map(function => function.text)
-          Some((qualifiedName, members, functions))
-        } else {
-          None
-        }
-        configCache = Some(config)
-        config
-      }
-      case Some(config) => config
-    }
-
-  }
-  */
+  
   private def getName(source: ScTypeDefinition): Option[String] = {
     source match {
       case clazz: ScClass => {
@@ -117,39 +89,6 @@ final class SiliconInjector extends SyntheticMembersInjector {
           case obj: ScObject =>
             obj.fakeCompanionClassOrCompanionClass match {
               case clazz: ScClass if clazz.findAnnotationNoAliases(qualifiedName) != null => {
-                /*
-                val params = clazz.constructor.get.parameterList.params
-
-                val applyArgs =
-                  params
-                    .map(p =>s"${p.name}: ${p.`type`().get.presentableText(TypePresentationContext.emptyContext)}")
-                    .mkString(", ")
-
-                val applyDef = s"def apply($applyArgs): ${clazz.getName} = ???"
-
-                val unapplyTypes =
-                  params
-                    .map(_.`type`().get.presentableText(TypePresentationContext.emptyContext))
-                    .mkString(", ")
-
-                //logger.info(s"params for ${clazz.getName}: $params")
-                //logger.info(s"params.isEmpty for ${clazz.getName}: ${params.isEmpty}")
-                //logger.info(s"params.lengthCompare(1) for ${clazz.getName}: ${params.lengthCompare(1)}")
-                //logger.info(s"unapplyTypes for ${clazz.getName}: $unapplyTypes")
-
-                val unapplyDef =
-                  if (params.isEmpty) {
-                    s"def unapply(obj: ${clazz.getName}): Boolean = ???"
-                  } else if (params.lengthCompare(1) == 0) {
-                    s"def unapply(obj: ${clazz.getName}): Option[$unapplyTypes] = ???"
-                  } else {
-                    s"def unapply(obj: ${clazz.getName}): Option[($unapplyTypes)] = ???"
-                  }
-
-                logger.info(s"Generating apply for ${clazz.getName}: $applyDef")
-                logger.info(s"Generating unapply for ${clazz.getName}: $unapplyDef")
-
-                Seq(applyDef, unapplyDef) ++ */
                 functions
               }
               case _ => Seq.empty
@@ -168,19 +107,6 @@ final class SiliconInjector extends SyntheticMembersInjector {
       case Some((qualifiedName, members, _)) => {
         source match {
           case clazz: ScClass if clazz.findAnnotationNoAliases(qualifiedName) != null =>
-            /*
-            val params = clazz.constructor.get.parameterList.params
-
-            val copyArgs =
-              params
-                .map(p =>s"${p.name}: ${p.`type`().get.presentableText(TypePresentationContext.emptyContext)} = ${p.name}")
-                .mkString(", ")
-
-            val copyDef = s"def copy($copyArgs): ${clazz.getName} = ???"
-
-            logger.info(s"Generating copy for ${clazz.getName}: $copyDef")
-
-            Seq(copyDef) ++ */
             members
           case _ =>
             Seq.empty
